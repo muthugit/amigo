@@ -271,8 +271,39 @@ class VehicleManager {
     }
 
     getNextUpcomingService(vehicleId) {
-        const upcoming = this.getUpcomingServices(vehicleId);
-        return upcoming.length > 0 ? upcoming[0] : null;
+        const now = new Date();
+        let services = this.maintenance.filter(m => m.vehicleId === vehicleId);
+        
+        // Filter services that have either next service date or mileage
+        services = services.filter(m => m.nextServiceDate || m.nextServiceMileage);
+        
+        // Sort by priority: overdue date, upcoming date, then by mileage
+        services.sort((a, b) => {
+            const aDate = a.nextServiceDate ? new Date(a.nextServiceDate) : null;
+            const bDate = b.nextServiceDate ? new Date(b.nextServiceDate) : null;
+            
+            // If both have dates, sort by date
+            if (aDate && bDate) {
+                return aDate - bDate;
+            }
+            
+            // If only one has a date, prioritize it
+            if (aDate && !bDate) return -1;
+            if (!aDate && bDate) return 1;
+            
+            // If neither has a date, sort by mileage
+            if (a.nextServiceMileage && b.nextServiceMileage) {
+                return a.nextServiceMileage - b.nextServiceMileage;
+            }
+            
+            // If only one has mileage, prioritize it
+            if (a.nextServiceMileage && !b.nextServiceMileage) return -1;
+            if (!a.nextServiceMileage && b.nextServiceMileage) return 1;
+            
+            return 0;
+        });
+        
+        return services.length > 0 ? services[0] : null;
     }
 
     getVehicleIcon(type) {
@@ -597,9 +628,22 @@ class VehicleManager {
 
         vehiclesGrid.innerHTML = this.vehicles.map(vehicle => {
             const nextService = this.getNextUpcomingService(vehicle.id);
-            const nextServiceText = nextService 
-                ? `Next: ${this.formatServiceType(nextService.serviceType)} - ${this.formatDate(nextService.nextServiceDate)}`
-                : 'No upcoming services';
+            let nextServiceText = 'No upcoming services';
+            
+            if (nextService) {
+                const serviceType = this.formatServiceType(nextService.serviceType);
+                
+                if (nextService.nextServiceDate && nextService.nextServiceMileage) {
+                    // Both date and mileage
+                    nextServiceText = `Next: ${serviceType} - ${this.formatDate(nextService.nextServiceDate)} or ${nextService.nextServiceMileage.toLocaleString()} km`;
+                } else if (nextService.nextServiceDate) {
+                    // Only date
+                    nextServiceText = `Next: ${serviceType} - ${this.formatDate(nextService.nextServiceDate)}`;
+                } else if (nextService.nextServiceMileage) {
+                    // Only mileage
+                    nextServiceText = `Next: ${serviceType} - ${nextService.nextServiceMileage.toLocaleString()} km`;
+                }
+            }
             
             return `
                 <div class="vehicle-card" data-id="${vehicle.id}">
