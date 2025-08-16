@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amigo - Vehicle Maintenance</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <button id="backBtn" class="back-btn" style="display: none;">←</button>
+            <h1 id="pageTitle">Amigo</h1>
+        </header>
+
+        <main class="main-content">
+            <div id="vehicleList" class="page active">
+                <div class="vehicles-container">
+                    <div id="vehiclesGrid" class="vehicles-grid"></div>
+                    <div id="emptyState" class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M19 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                                <path d="M9 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                                <path d="M20 8h-16l2-3h12l2 3z"/>
+                                <path d="M2 8h20v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8z"/>
+                            </svg>
+                        </div>
+                        <h3>No vehicles yet</h3>
+                        <p>Add your first vehicle to get started</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="vehicleDetails" class="page">
+                <div class="vehicle-details-container">
+                    <div class="vehicle-header">
+                        <div class="vehicle-header-icon"></div>
+                        <div class="vehicle-header-info">
+                            <h2 id="detailVehicleName"></h2>
+                            <p id="detailVehicleInfo"></p>
+                        </div>
+                        <button id="editVehicleBtn" class="edit-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="vehicle-tags-display" id="detailVehicleTags"></div>
+
+                    <div class="detail-section">
+                        <h3>Recent Maintenance</h3>
+                        <div id="recentMaintenance" class="maintenance-list"></div>
+                        <button id="addMaintenanceBtn" class="btn btn-primary">Add Maintenance Record</button>
+                    </div>
+
+                    <div class="detail-section">
+                        <h3>Upcoming Services</h3>
+                        <div id="upcomingServices" class="upcoming-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="maintenancePage" class="page">
+                <div class="maintenance-container">
+                    <div class="filter-section">
+                        <select id="vehicleFilter" class="filter-select">
+                            <option value="all">All Vehicles</option>
+                        </select>
+                    </div>
+                    <div id="allMaintenance" class="maintenance-list"></div>
+                    <div id="maintenanceEmptyState" class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                            </svg>
+                        </div>
+                        <h3>No maintenance records</h3>
+                        <p>Start tracking your vehicle maintenance</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="schedulePage" class="page">
+                <div class="schedule-container">
+                    <div class="schedule-filter-section">
+                        <select id="scheduleVehicleFilter" class="filter-select">
+                            <option value="all">All Vehicles</option>
+                        </select>
+                    </div>
+                    
+                    <div class="schedule-view">
+                        <div class="schedule-summary">
+                            <div class="summary-card overdue">
+                                <div class="summary-number" id="overdueCount">0</div>
+                                <div class="summary-label">Overdue</div>
+                            </div>
+                            <div class="summary-card upcoming">
+                                <div class="summary-number" id="upcomingCount">0</div>
+                                <div class="summary-label">This Month</div>
+                            </div>
+                            <div class="summary-card total">
+                                <div class="summary-number" id="totalScheduled">0</div>
+                                <div class="summary-label">Total Scheduled</div>
+                            </div>
+                        </div>
+
+                        <div id="scheduleList" class="schedule-list"></div>
+                        <div id="scheduleEmptyState" class="empty-state">
+                            <div class="empty-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                            </div>
+                            <h3>No scheduled services</h3>
+                            <p>Add maintenance records with reminders to see upcoming services</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="vehicleForm" class="page">
+                <form id="vehicleFormElement" class="vehicle-form">
+                    <div class="form-group">
+                        <label for="vehicleName">Vehicle Name</label>
+                        <input type="text" id="vehicleName" name="name" placeholder="My Car" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vehicleType">Vehicle Type</label>
+                        <select id="vehicleType" name="type" required>
+                            <option value="">Select type</option>
+                            <option value="car">Car</option>
+                            <option value="van">Van</option>
+                            <option value="bus">Bus</option>
+                            <option value="motorcycle">Motorcycle</option>
+                            <option value="bike">Bike</option>
+                            <option value="truck">Truck</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="expand-section">
+                        <button type="button" id="expandBtn" class="expand-btn">
+                            <span>Add more details</span>
+                            <span class="expand-icon">▼</span>
+                        </button>
+                        
+                        <div id="expandedFields" class="expanded-fields" style="display: none;">
+                            <div class="form-group">
+                                <label for="vehicleMake">Make</label>
+                                <input type="text" id="vehicleMake" name="make" placeholder="Toyota">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="vehicleModel">Model</label>
+                                <input type="text" id="vehicleModel" name="model" placeholder="Camry">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="vehicleYear">Year</label>
+                                <input type="number" id="vehicleYear" name="year" placeholder="2020" min="1900" max="2024">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="vehicleTags">Tags (comma separated)</label>
+                                <input type="text" id="vehicleTags" name="tags" placeholder="daily, work, family">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Vehicle</button>
+                        <button type="button" id="deleteBtn" class="btn btn-danger" style="display: none;">Delete Vehicle</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="maintenanceForm" class="page">
+                <form id="maintenanceFormElement" class="maintenance-form">
+                    <div class="form-group">
+                        <label for="serviceType">Service Type</label>
+                        <select id="serviceType" name="serviceType" required>
+                            <option value="">Select service type</option>
+                            <option value="oil_change">Oil Change</option>
+                            <option value="tire_rotation">Tire Rotation</option>
+                            <option value="brake_service">Brake Service</option>
+                            <option value="wheel_alignment">Wheel Alignment</option>
+                            <option value="transmission_service">Transmission Service</option>
+                            <option value="coolant_flush">Coolant Flush</option>
+                            <option value="air_filter">Air Filter</option>
+                            <option value="spark_plugs">Spark Plugs</option>
+                            <option value="battery_service">Battery Service</option>
+                            <option value="inspection">Inspection</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="customServiceGroup" style="display: none;">
+                        <label for="customService">Custom Service</label>
+                        <input type="text" id="customService" name="customService" placeholder="Enter service type">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="serviceDate">Service Date</label>
+                        <input type="date" id="serviceDate" name="serviceDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="currentMileage">Current Mileage/Kilometers</label>
+                        <input type="number" id="currentMileage" name="currentMileage" placeholder="50000" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vendor">Vendor/Service Provider (optional)</label>
+                        <select id="vendor" name="vendor">
+                            <option value="">Select vendor</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cost">Cost</label>
+                        <input type="number" id="cost" name="cost" placeholder="0.00" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" name="notes" placeholder="Additional notes..." rows="3"></textarea>
+                    </div>
+
+                    <div class="expand-section">
+                        <button type="button" id="reminderExpandBtn" class="expand-btn">
+                            <span>Set reminder for next service</span>
+                            <span class="expand-icon">▼</span>
+                        </button>
+                        
+                        <div id="reminderFields" class="expanded-fields" style="display: none;">
+                            <div class="form-group">
+                                <label for="nextServiceMileage">Next Service Mileage/Kilometers</label>
+                                <input type="number" id="nextServiceMileage" name="nextServiceMileage" placeholder="55000" min="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nextServiceDate">Next Service Date</label>
+                                <input type="date" id="nextServiceDate" name="nextServiceDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Maintenance Record</button>
+                        <button type="button" id="deleteMaintenanceBtn" class="btn btn-danger" style="display: none;">Delete Record</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="vendorsPage" class="page">
+                <div class="vendors-container">
+                    <div id="vendorsList" class="vendors-list"></div>
+                    <div id="vendorsEmptyState" class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <h3>No vendors yet</h3>
+                        <p>Add service providers and contacts</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="vendorForm" class="page">
+                <form id="vendorFormElement" class="vendor-form">
+                    <div class="form-group">
+                        <label for="vendorName">Vendor Name</label>
+                        <input type="text" id="vendorName" name="name" placeholder="Joe's Auto Shop" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vendorLocation">Location/Address</label>
+                        <input type="text" id="vendorLocation" name="location" placeholder="123 Main St, City">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vendorPhone">Phone Number</label>
+                        <input type="tel" id="vendorPhone" name="phone" placeholder="(555) 123-4567">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vendorEmail">Email (optional)</label>
+                        <input type="email" id="vendorEmail" name="email" placeholder="contact@vendor.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vendorNotes">Notes</label>
+                        <textarea id="vendorNotes" name="notes" placeholder="Specializes in oil changes, good prices..." rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Vendor</button>
+                        <button type="button" id="deleteVendorBtn" class="btn btn-danger" style="display: none;">Delete Vendor</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="vehicleList">
+                <span class="nav-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                        <path d="M9 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                        <path d="M20 8h-16l2-3h12l2 3z"/>
+                        <path d="M2 8h20v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8z"/>
+                    </svg>
+                </span>
+                <span class="nav-label">Vehicles</span>
+            </button>
+            <button class="nav-item" data-page="maintenance">
+                <span class="nav-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                    </svg>
+                </span>
+                <span class="nav-label">Maintenance</span>
+            </button>
+            <button class="nav-item" data-page="schedule">
+                <span class="nav-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                </span>
+                <span class="nav-label">Schedule</span>
+            </button>
+            <button class="nav-item" data-page="vendors">
+                <span class="nav-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                </span>
+                <span class="nav-label">Vendors</span>
+            </button>
+        </nav>
+
+        <button id="addVehicleBtn" class="fab">+</button>
+        <button id="addVendorBtn" class="fab" style="display: none;">+</button>
+
+        <!-- Vendor Bottom Sheet Modal -->
+        <div id="vendorBottomSheet" class="bottom-sheet-overlay">
+            <div class="bottom-sheet">
+                <div class="bottom-sheet-header">
+                    <h3>Add New Vendor</h3>
+                    <button id="closeBottomSheet" class="close-btn">✕</button>
+                </div>
+                <form id="vendorBottomSheetForm" class="bottom-sheet-form">
+                    <div class="form-group">
+                        <label for="bottomSheetVendorName">Vendor Name</label>
+                        <input type="text" id="bottomSheetVendorName" name="name" placeholder="Joe's Auto Shop" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bottomSheetVendorLocation">Location/Address</label>
+                        <input type="text" id="bottomSheetVendorLocation" name="location" placeholder="123 Main St, City">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bottomSheetVendorPhone">Phone Number</label>
+                        <input type="tel" id="bottomSheetVendorPhone" name="phone" placeholder="(555) 123-4567">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="cancelBottomSheet" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Vendor</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
